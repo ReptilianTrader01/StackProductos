@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MenuScreen from './screens/MenuScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import ProductListScreen from './screens/ProductListScreen';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [products, setProducts] = useState([]);
+
+  const addProduct = (newProduct) => {
+    setProducts(prevProducts => [...prevProducts, newProduct]);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Menu">
+        <Stack.Screen name="Menu" options={{ title: 'Menú Principal' }}>
+          {(props) => <MenuScreen {...props} products={products} />}
+        </Stack.Screen>
+
+        <Stack.Screen name="Register" options={{ title: 'Registrar Nuevo Producto' }}>
+          {(props) => <RegisterScreen {...props} addProduct={addProduct} />}
+        </Stack.Screen>
+
+        <Stack.Screen name="ProductList" options={{ title: 'Inventario de Productos' }}>
+          {(props) => <ProductListScreen {...props} products={products} />}
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
